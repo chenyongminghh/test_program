@@ -1,0 +1,10 @@
+DEBUG_NAME = ""
+DEBUG_TOOL = "MLU370_Debug_Tool_V0_0_2_x86"
+DVT_VER = "mlu370_dvt_test_v0.3.8"
+CNQUAL_VER = "mlu370_cnqual_v0.6.0"
+L1_IP = "10.100.130.180"
+MT = "MLU370"
+SN = "512101300025"
+MFG_MODE = True
+BMC_IP = ["192.168.100.50", ""]
+RELEASE_VER = "release"

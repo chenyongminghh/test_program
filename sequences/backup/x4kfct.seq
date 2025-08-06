@@ -1,0 +1,123 @@
+search tests
+search utilities
+
+exec setup_variables.py                                     # Setup Variables
+exec record_serial_number.py                                # Record SN
+exec temp_fan_speed_set.py                                  # Temp Fan Speed Set
+
+opstart flashmcu
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_update_mcu.py                                 # Update MCU
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec pcie_link_check.py --gen1                            # PCIE Link Status Check
+  exec mlu370_update_mcu.py --force                         # Update MCU Bak App
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec pcie_link_check.py --gen1                            # PCIE Link Status Check
+  exec mlu370_core_voltage_change.py --voltage 70           # Change Core Voltage 0.70V
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_core_voltage_check.py --voltage 70            # Check Core Voltage 0.70V
+  exec mlu370_soc_voltage_change.py --voltage 76            # Change SOC Voltage 0.76V
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_soc_voltage_check.py --voltage 76             # Check SOC Voltage 0.76V
+opstop
+
+opstart flashimage
+  exec mlu370_update_d2d.py --voltage 76                    # D2D Training
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_check_boot_status.py                          # Check M0 Boot Status
+  exec mlu370_cpm_count_check.py                            # CPM Count Check
+  exec mlu370_cpm_enable.py                                 # CPM Enable
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_cpm_check.py                                  # CPM Enable Check
+  exec mlu370_core_voltage_adjust.py                        # Core Voltage Adjust
+  exec mlu370_soc_voltage_change.py --voltage 78            # Change SOC Voltage 0.78V
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_soc_voltage_check.py --voltage 78             # Check SOC Voltage 0.78V
+opstop
+exec mlu370_check_boot_status.py                            # Check M0 Boot Status
+exec mlu370_check_fw_version.py                             # Check MCU Version
+
+opstart fct                                                 # FCT Test
+  exec mlu370_unzip_dvt_package.py -f                       # DVT Unzip Package
+  exec mlu370_unload_driver.py                              # DVT Unload Driver
+  exec mlu370_check_crc_state.py                            # Check CRC State
+  exec mlu370_check_linkecc.py                              # Check Linkecc
+  exec mlu370_check_fw_version.py                           # Check MCU Version
+  exec mlu370_check_cluster.py                              # Check Cluster Mask
+  repeat 10
+    exec pcie_link_down.py                                  # PCIE Linkdown
+    exec pcie_link_check.py --gen1                          # PCIE Link Status Check
+    exec pcie_workaround.py                                 # PCIE Retrain to GEN3/4
+    exec pcie_speed_change.py                               # PCIE Link Speed Change
+    exec pcie_link_check.py                                 # PCIE Link Status Check
+    exec mlu370_serdes_init.py                              # Serdes Init
+    exec mlu370_serdes_startup.py                           # Serdes Startup
+    exec mlu370_serdes_test_ber.py                          # Serdes BER Test
+  end
+  exec mlu370_stress_ddr.py                                 # Stress DDR
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_load_driver.py -v                             # Load Driver Master
+  exec pcie_link_check.py                                   # PCIE Link Status Check
+  exec mlu370_check_serdes_ready.py                         # RX Ready Check
+  exec mlu370_fec_record.py                                 # FEC Record
+  exec temp_monitor_start.py                                # Temp Monitor Startup
+  exec mlu370_power_fix_maxpower.py --dimz 30               # Power FIX Maxpower
+  exec temp_monitor_stop.py                                 # Temp Monitor Stop
+  exec mlu370_pitest_fix_burst.py --low 4000                # PITest FIX Burst
+  exec mlu370_pitest_fix_maxpower.py                        # PITest FIX Maxpower
+  exec mlu370_pitest_fp_burst.py                            # PITest FP Burst
+  exec mlu370_pitest_fp_maxpower.py                         # PITest FP Maxpower
+  exec mlu370_pitest_fix_maxpower_u8_io.py --dimz 500000    # PITest U8 IO
+  exec mlu370_dvt_resnet50_u4.py --loops 10 --dimz 10       # DVT Resnet50 U4
+  exec mlu370_dvt_ng.py                                     # DVT NG
+  exec mlu370_dvt_mobilenet.py                              # DVT Mobilenet
+  exec mlu370_dvt_resnet50_layer4.py                        # DVT Resnet50 Layer4
+  exec mlu370_dvt_gdmac.py --loops 300                      # DVT GDMAC
+  exec mlu370_overall_fix_burst_d2d.py --low 4000 -d 300    # PITest FIX Burst and GDMAC
+  exec mlu370_overall_fix_maxpower_d2d.py -d 300            # PITest FIX Maxpower and GDMAC
+  exec mlu370_dvt_driver_dma.py --loops 5                   # DVT PCIE-DMA
+  exec mlu370_overall_fix_burst_dma.py --low 4000 -d 10     # PITest FIX Burst and DMA
+  exec mlu370_overall_fix_maxpower_dma.py -d 10             # PITest FIX Maxpower and DMA
+  exec mlu370_fec_check.py                                  # FEC Check
+  exec mlu370_dvt_ncs.py --loops 100000                     # DVT NCS Test
+  exec mlu370_fec_check.py                                  # FEC Check
+  exec mlu370_overall_fix_burst_ncs.py -p 3 -n 100000       # PITest FIX Burst and NCS
+  exec mlu370_overall_fix_maxpower_ncs.py -p 3 -n 100000    # PITest FIX Maxpower and NCS
+  exec mlu370_fec_check.py                                  # FEC Check
+  exec mlu370_dvt_io.py                                     # DVT IO
+  exec mlu370_dvt_io_cross.py                               # DVT IO Cross
+  exec mlu370_dvt_cnnl.py                                   # DVT CNNL
+  exec mlu370_dvt_driver_sbts.py                            # DVT SBTS
+  exec mlu370_dvt_video_dec.py                              # DVT Video Dec
+  exec mlu370_dvt_video_enc.py                              # DVT Video Enc
+  exec mlu370_dvt_jpeg.py                                   # DVT JPEG
+  exec pcie_link_check.py                                   # PCIE Link Status Check
+  exec mlu370_unload_driver.py                              # Unload Driver
+  exec mlu370_check_crc_state.py                            # Check CRC State
+  exec mlu370_check_linkecc.py                              # Check Linkecc
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_load_driver.py --powerddr -v                  # Load Driver Powerddr
+  exec mlu370_overall_fix_burst_ddr.py --low 4000           # PITest FIX Burst and DDR
+  exec mlu370_overall_fix_maxpower_ddr.py                   # PITest FIX Maxpower and DDR
+  exec mlu370_unload_driver.py                              # Unload Driver
+  exec mlu370_check_crc_state.py                            # Check CRC State
+  exec mlu370_check_linkecc.py                              # Check Linkecc
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec pcie_workaround.py                                   # PCIE Retrain to GEN3/4
+  exec mlu370_dvt_cpu.py                                    # DVT BSP Test
+  exec mlu370_unload_driver.py                              # Unload Driver
+  exec mlu370_check_crc_state.py                            # Check CRC State
+  exec mlu370_check_linkecc.py                              # Check Linkecc
+opstop
+
+exec kill_monitor.py                                        # Kill Monitor
+exec touch ~/quit.now                                       # Touch quit.now
+exec save_mfg_log.py                                        # Save logs
+exec poweroff.py                                            # Power Off
+
+block MODE=FAIL TYPE=ALL
+  exec kill_monitor.py                                      # Kill Monitor
+  exec touch ~/quit.now                                     # Touch quit.now
+  exec save_mfg_log.py                                      # Save logs on Failure
+end

@@ -1,0 +1,32 @@
+search tests
+search utilities
+
+exec setup_variables.py                                     # Setup Variables
+exec mlu370_check_boot_status.py                            # Check M0 Boot Status
+
+opstart burnin                                              # Burnin Test
+  exec mlu370_unzip_dvt_package.py -f                       # DVT Unzip Package
+  exec mlu370_unload_driver.py                              # DVT Unload Driver
+  exec mlu370_check_crc_state.py                            # Check CRC State
+  exec mlu370_check_linkecc.py                              # Check Linkecc
+  exec mlu370_check_cluster.py                              # Check Cluster Mask
+  exec mlu370_core_voltage_change.py --voltage 86           # Change Core Voltage to 0.86V
+  exec mlu370_cpm_enable.py --voltage 86                    # CPM Enable
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_cpm_check.py                                  # CPM Enable Check
+  exec mlu370_core_freq_set.py                              # Change IPU Freq to 1.2G
+  exec pcie_link_check.py --gen1                            # PCIE Link Status Check
+  exec mlu370_core_freq_read.py                             # Read IPU Freq
+  exec mlu370_load_driver.py -v                             # Load Driver Master
+  exec pcie_link_check.py                                   # PCIE Link Status Check
+  repeat 300    
+    exec pcie_link_check.py                                   # PCIE Link Status Check
+    exec mlu370_core_freq_read.py                           # Read IPU Freq
+    exec mlu370_dvt_resnet50_u4.py --loops 10 --dimz 10     # DVT Resnet50 U4
+    exec mlu370_check_crc_state.py                          # Check CRC State
+  end
+opstop
+
+exec kill_monitor.py                                        # Kill Monitor
+exec touch ~/quit.now                                       # Touch quit.now
+

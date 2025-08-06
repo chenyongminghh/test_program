@@ -1,0 +1,84 @@
+search tests
+search utilities
+
+exec setup_variables.py                                     # Setup Variables
+exec record_serial_number.py                                # Record SN
+exec temp_fan_speed_set.py --stress                         # Temp Fan Speed Set
+exec mlu370_check_boot_status.py                            # Check M0 Boot Status
+exec mlu370_check_fw_version.py                             # Check MCU Version
+exec pcie_link_check.py --gen1                              # PCIE Link Status Check
+
+opstart burnin                                              # Burnin Test
+  exec mlu370_unzip_dvt_package.py -f                       # DVT Unzip Package
+  exec mlu370_unload_driver.py                              # DVT Unload Driver
+  exec mlu370_check_linkecc.py                              # Check Linkecc
+  exec mlu370_check_cluster.py                              # Check Cluster Mask
+  exec mlu370_load_driver.py -v                             # Load Driver Master
+  exec mlu370_power_fix_maxpower.py --dimz 400              # Power FIX Maxpower
+  exec temp_range_check.py                                  # Temp Range Check
+  exec mlu370_unload_driver.py                              # DVT Unload Driver
+  exec mlu370_check_linkecc.py                              # Check Linkecc
+  repeat 10
+    exec mlu370_check_fw_version.py                         # Check MCU Version
+    exec pcie_link_down.py                                  # PCIE Linkdown
+    exec pcie_link_check.py --gen1                          # PCIE Link Status Check
+    exec pcie_workaround.py                                 # PCIE Retrain to GEN3/4
+    exec pcie_speed_change.py                               # PCIE Link Speed Change
+    exec pcie_link_check.py                                 # PCIE Link Status Check
+    exec mlu370_stress_ddr.py                               # Stress DDR
+    exec pcie_link_down.py                                  # PCIE Linkdown
+    exec mlu370_load_driver.py -v                           # Load Driver Master
+    exec pcie_link_check.py                                 # PCIE Link Status Check
+    exec mlu370_power_fix_maxpower.py --dimz 170            # Power FIX Maxpower
+    exec temp_range_check.py                                # Temp Range Check
+    exec mlu370_pitest_fix_burst.py                         # PITest FIX Burst
+    exec mlu370_pitest_fix_maxpower.py                      # PITest FIX Maxpower
+    exec mlu370_pitest_fp_burst.py                          # PITest FP Burst
+    exec mlu370_pitest_fp_maxpower.py                       # PITest FP Maxpower
+    exec mlu370_dvt_ng.py                                   # DVT NG
+    exec mlu370_dvt_mobilenet.py                            # DVT Mobilenet
+    exec mlu370_dvt_resnet50_layer4.py                      # DVT Resnet50 Layer4
+    exec mlu370_dvt_gdmac.py --loops 300                    # DVT GDMAC
+    exec mlu370_overall_fix_burst_d2d.py -d 300             # PITest FIX Burst and GDMAC
+    exec mlu370_overall_fix_maxpower_d2d.py -d 300          # PITest FIX Maxpower and GDMAC
+    exec mlu370_dvt_driver_dma.py --loops 5                 # DVT PCIE-DMA
+    exec mlu370_overall_fix_burst_dma.py -d 5               # PITest FIX Burst and DMA
+    exec mlu370_overall_fix_maxpower_dma.py -d 5            # PITest FIX Maxpower and DMA
+    exec mlu370_dvt_io.py                                   # DVT IO
+    exec mlu370_dvt_io_cross.py                             # DVT IO Cross
+    exec mlu370_dvt_cnnl.py                                 # DVT CNNL
+    exec mlu370_dvt_cnnl_matmul.py --loops 10               # DVT CNNL Matmul
+    exec mlu370_dvt_driver_sbts.py                          # DVT SBTS
+    exec mlu370_dvt_video_dec.py                            # DVT Video Dec
+    exec mlu370_dvt_video_enc.py                            # DVT Video Enc
+    exec mlu370_dvt_jpeg.py                                 # DVT JPEG
+    exec mlu370_power_fix_burst.py                          # Power FIX Burst
+    exec mlu370_power_fix_maxpower.py                       # Power FIX Maxpower
+    exec mlu370_power_fp_burst.py                           # Power FP Burst
+    exec mlu370_power_fp_maxpower.py                        # Power FP Maxpower
+    exec pcie_link_check.py                                 # PCIE Link Status Check
+    exec mlu370_unload_driver.py                            # DVT Unload Driver
+    exec mlu370_check_linkecc.py                            # Check Linkecc
+    exec pcie_link_down.py                                  # PCIE Linkdown
+    exec mlu370_load_driver.py --powerddr -v                # Load Driver Powerddr
+    exec mlu370_ddr_maxpower_start.py                       # DDR Maxpower Start
+    exec mlu370_pitest_fix_burst.py                         # PITest FIX Burst
+    exec mlu370_ddr_maxpower_stop.py                        # DDR Maxpower Stop
+    exec mlu370_ddr_maxpower_start.py                       # DDR Maxpower Start
+    exec mlu370_pitest_fix_maxpower.py                      # PITest FIX Maxpower
+    exec mlu370_ddr_maxpower_stop.py                        # DDR Maxpower Stop
+    exec mlu370_unload_driver.py                            # DVT Unload Driver
+    exec mlu370_check_linkecc.py                            # Check Linkecc
+  end
+opstop
+
+exec kill_monitor.py                                        # Kill Monitor
+exec touch ~/quit.now                                       # Touch quit.now
+exec save_mfg_log.py                                        # Save logs
+exec poweroff.py                                            # Power Off
+
+block MODE=FAIL TYPE=ALL
+  exec kill_monitor.py                                      # Kill Monitor
+  exec touch ~/quit.now                                     # Touch quit.now
+  exec save_mfg_log.py                                      # Save logs on Failure
+end
