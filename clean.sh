@@ -1,23 +1,31 @@
 #!/bin/bash
+USER=`whoami`
+MAIN_PATH=`echo ~`
+STV_PATH=$MAIN_PATH"/MLU370/mlu370_test"
+LOG_FILE=$MAIN_PATH"/start_utp.log"
+QUIT_PATH=$MAIN_PATH"/quit.now"
 
-curPath=$(dirname $(readlink -f "$0"))
-logPath=${curPath}"/logs"
-PASSWORD="hello123"
+function log_info()
+{
+    if [  -d /var/log  ];then
+        mkdir -p /var/log 
+    fi
+    DATE_N=`date +"%Y-%m-%d %H:%M:%S"`
+    USER_N=`whoami`
+    echo "${DATE_N} INFO $@" |tee -a $LOG_FILE
+}
 
-echo $curPath
-echo $PASSWORD | sudo -S rm -rf error.log
-echo $PASSWORD | sudo -S rm -rf errors.log
-echo $PASSWORD | sudo -S rm -rf logdata.utp
-echo $PASSWORD | sudo -S rm -rf onfail.log
-echo $PASSWORD | sudo -S rm -rf rawtester.log
-echo $PASSWORD | sudo -S rm -rf sequence.json
-echo $PASSWORD | sudo -S rm -rf test.log
-echo $PASSWORD | sudo -S rm -rf tester.log
-echo $PASSWORD | sudo -S rm -rf logs/*
-echo $PASSWORD | sudo -S rm -rf firmware
-echo $PASSWORD | sudo -S rm -rf sttools
+log_info "Clean Auto Environment"
 
-cp utilities/variables ./variables
+if [ -f $QUIT_PATH ];then
+    log_info "Remove quit.now"
+    echo 'hello123'|sudo -S rm -rf $QUIT_PATH
+fi
 
-echo
+if [ -d $STV_PATH ];then
+    log_info "Remove "$STV_PATH
+    echo 'hello123'|sudo -S rm -rf $STV_PATH
+fi
+
+echo ''
 
