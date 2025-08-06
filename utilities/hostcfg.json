@@ -1,0 +1,67 @@
+{
+    "General": {
+        "PLATFORM":             "GEN4",
+        "FW_PACKAGE":           "mlu370_fw_20231214.tar.gz",
+        "MCU_VERSION":          {"S4":"0116-RC2", "S8":"0116-RC2", "X4":"0116-RC1", "X4K":"0116-RC1", "X4L":"0116-RC1", "X8":"0116-RC2", "X9":"0116-RC3", "X9L":"0116-RC3", "M8":"0114-RC1", "M8_3U":"0116-RC1", "D2":"0116-RC2"},
+        "D2D_VER":              {"S4":"00.0.4", "S8":"00.0.4", "X4":"00.0.3", "X4K":"00.0.3", "X4L":"00.0.3", "X8":"00.0.3", "X9":"00.0.3", "X9L":"00.0.3", "M8":"00.0.3", "M8_3U":"00.0.3", "D2":"00.0.0"},
+        "DDR_VER":              {"S4":"00.1.2", "S8":"00.1.2", "X4":"00.1.2", "X4K":"00.1.2", "X4L":"00.1.2", "X8":"00.1.2", "X9":"00.1.2", "X9L":"00.1.2", "M8":"00.1.2", "M8_3U":"00.1.2", "D2":"00.1.2"},
+        "ISSE_VER":             {"S4":"01.1.0", "S8":"01.1.0", "X4":"01.1.0", "X4K":"01.1.0", "X4L":"01.1.0", "X8":"01.1.0", "X9":"01.1.0", "X9L":"01.1.0", "M8":"01.1.0", "M8_3U":"01.1.0", "D2":"01.1.1"},
+        "BMC_OKAY":             "1.18.0000",
+        "BA_MCU_OKAY":          "0203",
+        "PCIE_SW_OKAY":         "42001011",
+        "PSU_OKAY_GW":          "1.030-1.00",
+        "PSU_IMAGE_GW":         "HWJ_CRPS3000L5R_BOOT_1.030_20211110.bin",
+        "PSU_OKAY_TAIDA":       "S2-V021-V030",
+        "PSU_IMAGE_TAIDA":      "DPS-3000AB-19_A_PRI_SEC_V021_V030.bin",
+        "BMC_PACKAGE_MD5SUM":   "fca0cc59f0a575c05cc56c9d771106a3",
+        "BMC_PACKAGE":          "MLU370_BA_BMC_v118_220817.zip",
+        "BMC_IMAGE":            "MLU-X1000_Series_BMC_V1.18.0.ima_enc",
+        "BA_MCU_IMAGE":         "MLUX-BB1_firmware_v203-IAP.bin",
+        "SEQNAME":              "mlu370mfg.seq",
+        "STRESS_DDR":           "MLU370_Debug_Tool_Stress_DDR_V016",
+        "DVT_PACKAGE_MD5SUM":   "87f34b29262f7daedd382945cbc6f67b",
+        "DVT_PACKAGE":          "mlu370_dvt_test_v1.6.4_231228.tar.gz",
+        "DVT_VER":              "mlu370_dvt_test_v1.6.4",
+        "RELEASE_VER":          "release_neuware-c30s-4.12.3.28_ECC_53G",
+        "RELEASE_VER_S8":       "release_neuware_c30s_4.12.3_53G_S8",
+        "RELEASE_VER_X9":       "release_neuware_c30s_4.12.3_ECC_50G_X9",
+        "RELEASE_POWERDDR":     "release-c30s-4.12.401_powerddr_NoLPW",
+        "RELEASE_POWERDDR_D2":  "release-neuware-c30s-4.12.120-D2_powerddr_NoLPW",
+        "RELEASE_POWERDDR_S8":  "release-c30s-4.12.401_powerddr_NoLPW",
+        "RELEASE_PINCS":        "release_neuware_rls4.20.20_230310_PINCS",
+        "RELEASE_PINCS_X9":     "release_neuware_rls4.20.24_231228_PINCS_X9",
+        "DEBUG_TOOL":           "MLU370_Debug_Tool_V0_2_8_x86",
+        "PCIE_TOOL":            "PCIE_TEST_Tool_V1_1_0_x86",
+        "NOR_TOOL":             "MLU370_norflash_tool_v1.0",
+        "SERDES_PACKAGE":       "serdes_tools_240108.tar.gz",
+        "SERDES_TOOL":          "t_lpbk_serdes_34326_240108_V022_53G",
+        "BMC_IP":               ["192.168.100.50", ""],
+        "NVME_QTY":             "4",
+        "IB_QTY":               "1",
+        "MFG_MODE":             true,
+        "MFG_FAIL_MODE":        true,
+        "dccycle_required":     "Reboot"
+    },
+    "10.100.192.13": {
+        "MFG_MODE": false,
+        "MFG_FAIL_MODE": false
+    },
+    "10.100.192.33": {
+        "MFG_MODE": false,
+        "MFG_FAIL_MODE": false
+    },
+    "10.100.207.203": {
+        "MFG_MODE": false,
+        "MFG_FAIL_MODE": false
+    },
+    "10.100.207.7": {
+        "PLATFORM": "GEN4",
+        "BMC_IP": ["10.100.207.152", ""],
+        "SERVER_IP": "10.100.130.180",
+        "SERVER_USER": "cambricon",
+        "SERVER_PATH": "/home/cambricon/ACDC/request",
+        "NVME_QTY": "4",
+        "IB_QTY": "0",
+        "dccycle_required": "Reboot"
+    }
+}

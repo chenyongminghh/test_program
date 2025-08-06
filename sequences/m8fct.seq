@@ -1,0 +1,80 @@
+search tests
+search utilities
+
+exec setup_variables.py                                     # Setup Variables
+exec record_serial_number.py                                # Record SN
+exec download_package_new.py                                # Download DVT Packages
+
+opstart flashmcu
+  exec mlu370_update_mcu.py                                 # Update MCU
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_update_mcu.py --force                         # Update MCU Bak App
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_core_voltage_change.py --voltage 85           # Change Core Voltage 0.85V
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_core_voltage_check.py --voltage 85            # Check Core Voltage 0.85V
+  exec mlu370_soc_voltage_change.py --voltage 76            # Change SOC Voltage 0.76V
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_soc_voltage_check.py --voltage 76             # Check SOC Voltage 0.76V
+opstop
+
+opstart flashimage
+  exec mlu370_update_d2d.py --voltage 76                    # D2D Training
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_check_boot_status.py                          # Check M0 Boot Status
+  exec mlu370_check_fw_version.py                           # Check MCU Version
+  exec mlu370_cpm_enable.py --voltage 85                    # CPM Enable
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_cpm_check.py                                  # CPM Enable Check
+  exec mlu370_soc_voltage_change.py --voltage 78            # Change SOC Voltage 0.78V
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_soc_voltage_check.py --voltage 78             # Check SOC Voltage 0.78V
+opstop
+
+opstart ngtest
+  exec mlu370_cpm_close.py                                  # CPM Close
+  exec mlu370_core_voltage_change.py --voltage 81           # Change Core Voltage 0.81V
+  exec mlu370_unzip_dvt_package.py -f                       # DVT Unzip Package
+  exec mlu370_load_driver.py -v                             # Load Driver Master
+  exec pcie_link_check.py                                   # PCIE Link Status Check
+  exec mlu370_dvt_ng.py                                     # DVT NG
+  exec mlu370_unload_driver.py                              # DVT Unload Driver
+opstop
+
+opstart corevoltage
+  exec mlu370_core_voltage_change.py --voltage 85           # Change Core Voltage 0.85V
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_core_voltage_check.py --voltage 85            # Check Core Voltage 0.85V
+opstop
+
+opstart fct                                                 # FCT Test
+  exec mlu370_unzip_dvt_package.py -f                       # DVT Unzip Package
+  exec mlu370_unload_driver.py                              # DVT Unload Driver
+  exec mlu370_check_crc_state.py                            # Check CRC State
+  exec mlu370_check_linkecc.py                              # Check Linkecc
+  exec mlu370_check_fw_version.py                           # Check MCU Version
+  exec mlu370_check_cluster.py                              # Check Cluster Mask
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec pcie_workaround.py                                   # PCIE Retrain to GEN3/4
+  exec pcie_link_check.py                                   # PCIE Link Status Check
+  exec mlu370_stress_ddr.py                                 # Stress DDR
+  exec pcie_link_down.py                                    # PCIE Linkdown
+  exec mlu370_load_driver.py -v                             # Load Driver Master
+  exec pcie_link_check.py                                   # PCIE Link Status Check
+  exec mlu370_pitest_fix_burst.py --high 2000 --low 7000    # PITest FIX Burst
+  exec pcie_link_check.py                                   # PCIE Link Status Check
+  exec mlu370_unload_driver.py                              # Unload Driver
+  exec mlu370_check_crc_state.py                            # Check CRC State
+  exec mlu370_check_linkecc.py                              # Check Linkecc
+  exec mlu370_check_bit_ecc.py                              # Check bit ecc
+opstop
+
+exec kill_monitor.py                                        # Kill Monitor
+exec touch ~/quit.now                                       # Touch quit.now
+exec save_mfg_log.py                                        # Save logs
+
+block MODE=FAIL TYPE=ALL
+  exec kill_monitor.py                                      # Kill Monitor
+  exec touch ~/quit.now                                     # Touch quit.now
+  exec save_mfg_log.py                                      # Save logs on Failure
+end

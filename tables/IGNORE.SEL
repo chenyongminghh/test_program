@@ -1,0 +1,24 @@
+Event Logging Disabled #0x2d | Log area reset/cleared | Asserted
+System Event #0xff | Timestamp Clock Sync | Asserted
+Fan #0x36 | Lower Non-critical going low  | Asserted
+Fan #0x36 | Lower Critical going low  | Asserted
+Fan #0x36 | Lower Non-recoverable going low  | Asserted
+Fan #0x37 | Lower Non-critical going low  | Asserted
+Fan #0x37 | Lower Critical going low  | Asserted
+Fan #0x37 | Lower Non-recoverable going low  | Asserted
+Fan #0x38 | Lower Non-critical going low  | Asserted
+Fan #0x38 | Lower Critical going low  | Asserted
+Fan #0x38 | Lower Non-recoverable going low  | Asserted
+Fan #0x39 | Lower Non-critical going low  | Asserted
+Fan #0x39 | Lower Critical going low  | Asserted
+Fan #0x39 | Lower Non-recoverable going low  | Asserted
+Fan #0x3c | Lower Non-critical going low  | Asserted
+Fan #0x3c | Lower Critical going low  | Asserted
+Fan #0x3c | Lower Non-recoverable going low  | Asserted
+Fan #0x3d | Lower Non-critical going low  | Asserted
+Fan #0x3d | Lower Critical going low  | Asserted
+Fan #0x3d | Lower Non-recoverable going low  | Asserted
+Fan #0x48 | Lower Non-critical going low  | Asserted
+Fan #0x48 | Lower Critical going low  | Asserted
+Fan #0x49 | Lower Non-critical going low  | Asserted
+Fan #0x49 | Lower Critical going low  | Asserted

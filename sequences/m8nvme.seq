@@ -1,0 +1,27 @@
+search tests
+search utilities
+
+exec setup_variables.py                                                     # Setup Variables
+exec record_serial_number.py                                                # Record SN
+
+opstart nvme                                                                # NVME Test
+  repeat 30
+    exec mlu370_nvme_format.py                                              # NVME Format
+    exec mlu370_nvme_stress.py --mode write                                 # Write Test
+    exec mlu370_nvme_stress.py --mode read --loops 3                        # Read Test
+    exec mlu370_nvme_stress.py --mode randread --time 600                   # ReadRead Test
+    exec mlu370_nvme_stress.py --mode randwrite --time 300                  # RandWrite Test
+  end
+opstop
+exec mlu370_nvme_format.py                                                  # NVME Format
+
+exec kill_monitor.py                                                        # Kill Monitor
+exec touch ~/quit.now                                                       # Touch quit.now
+exec save_mfg_log.py                                                        # Save logs
+exec poweroff.py                                                            # Power Off
+
+block MODE=FAIL TYPE=ALL
+  exec kill_monitor.py                                                      # Kill Monitor
+  exec touch ~/quit.now                                                     # Touch quit.now
+  exec save_mfg_log.py                                                      # Save logs on Failure
+end

@@ -1,0 +1,44 @@
+search tests
+search utilities
+
+exec setup_variables.py                                     # Setup Variables
+exec record_serial_number.py                                # Record SN
+exec temp_fan_speed_set.py --stress                         # Temp Fan Speed Set
+exec mlu370_check_boot_status.py                            # Check M0 Boot Status
+exec mlu370_check_fw_version.py                             # Check MCU Version
+exec pcie_link_check.py --gen1                              # PCIE Link Status Check
+
+opstart burnin                                              # Burnin Test
+  exec mlu370_unzip_dvt_package.py -f                       # DVT Unzip Package
+  exec mlu370_unload_driver.py                              # DVT Unload Driver
+  exec mlu370_check_linkecc.py                              # Check Linkecc
+  exec mlu370_check_cluster.py                              # Check Cluster Mask
+  repeat 200
+    exec mlu370_check_fw_version.py                         # Check MCU Version
+    exec pcie_link_down.py                                  # PCIE Linkdown
+    exec pcie_link_check.py --gen1                          # PCIE Link Status Check
+    exec pcie_workaround.py                                 # PCIE Retrain to GEN3/4
+    exec mlu370_ddr_maxpower_start.py                       # DDR Maxpower Start
+    exec mlu370_load_driver.py --powerddr -v                # Load Driver Powerddr
+    exec mlu370_pitest_fix_burst.py                         # PITest FIX Burst
+    exec mlu370_ddr_maxpower_stop.py                        # DDR Maxpower Start
+    exec mlu370_unload_driver.py                            # DVT Unload Driver
+    exec mlu370_ddr_maxpower_start.py                       # DDR Maxpower Start
+    exec mlu370_load_driver.py --powerddr -v                # Load Driver Powerddr
+    exec mlu370_pitest_fix_maxpower.py                      # PITest FIX Maxpower
+    exec mlu370_ddr_maxpower_stop.py                        # DDR Maxpower Start
+    exec mlu370_unload_driver.py                            # DVT Unload Driver
+    exec mlu370_check_linkecc.py                            # Check Linkecc
+  end
+opstop
+
+exec kill_monitor.py                                        # Kill Monitor
+exec touch ~/quit.now                                       # Touch quit.now
+exec save_mfg_log.py                                        # Save logs
+exec poweroff.py                                            # Power Off
+
+block MODE=FAIL TYPE=ALL
+  exec kill_monitor.py                                      # Kill Monitor
+  exec touch ~/quit.now                                     # Touch quit.now
+  exec save_mfg_log.py                                      # Save logs on Failure
+end
