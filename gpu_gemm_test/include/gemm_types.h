@@ -3,6 +3,7 @@
 
 #include <cuda_runtime.h>
 #include <cuda_fp16.h>
+#include <cstdint>
 
 // 数据类型枚举
 enum GemmDataType {
