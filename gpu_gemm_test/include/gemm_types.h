@@ -72,7 +72,7 @@ inline size_t get_dtype_size(GemmDataType dtype) {
     switch (dtype) {
         case GEMM_FP32: return sizeof(float);
         case GEMM_FP16: return sizeof(__half);
-        case GEMM_BF16: return sizeof(__nv_bfloat16);
+        case GEMM_BF16: return sizeof(uint16_t);
         case GEMM_TF32: return sizeof(float);
         case GEMM_INT8: return sizeof(int8_t);
         case GEMM_INT32: return sizeof(int32_t);
